@@ -1,4 +1,4 @@
-// Note: required c++17 or above 
+// MemoryTree
 #pragma once
 #include<iostream>
 #include<vector>
@@ -13,10 +13,10 @@ class MemoryTree {
 	// Node struct
 	struct MemoryNode {
 		T val;
-		vector<MemoryNode*> childs;
-		MemoryNode* parent;
+		vector<int> childs;
+		int parent;
 		// constructor
-		MemoryNode(MemoryNode* parent, T val) : val(val), parent(parent) {
+		MemoryNode(int parent, T val) : val(val), parent(parent) {
 		}
 	};
 	// data vec
@@ -29,22 +29,22 @@ public:
 
 	// parent_id<0 : adds new node directly to the root
 	const int emplace_child(const int parent_id, const T child_val) {
-		auto* parent = parent_id>=0 ? &nodes[parent_id] : nullptr;
-		auto* new_node = &nodes.emplace_back(MemoryNode(parent, child_val));
+		nodes.emplace_back(MemoryNode(parent_id, child_val));
 		if (parent_id>=0)
-			parent->childs.push_back(new_node);
+			nodes[parent_id].childs.push_back(nodes.size()-1);
 		return nodes.size()-1;
 	}
 
 	bool canBranchFind(const int leaf_id, const T val) const {
-		MemoryNode const* leaf = &nodes[leaf_id];
-		do {
-			if (leaf->val == val) {
+		int idx = leaf_id;
+		while(idx >= 0) {
+			const auto& node = nodes[idx];
+			if (node.val == val) {
 				return true;
 			}
 			//
-			leaf = leaf->parent;
-		} while(leaf);
+			idx = node.parent;
+		}
 		return false;
 	}
 };
