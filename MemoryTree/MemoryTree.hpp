@@ -15,6 +15,7 @@ class MemoryTree {
 		T val;
 		vector<int> childs;
 		int parent;
+		bool active = true;
 		// constructor
 		MemoryNode(int parent, T val) : val(val), parent(parent) {
 		}
@@ -35,29 +36,30 @@ public:
 
 	// parent_id<0 : adds new node directly to the root
 	const int emplace_child(const int parent_id, const T child_val) {
+		int id;
 		// check for place in deleted Nodes
 		if(removedNodes.size()) {
-			auto id = removedNodes[removedNodes.size()-1];
+			id = removedNodes[removedNodes.size()-1];
+			auto& node = nodes[id];
+			//
 			removedNodes.pop_back();
-			for (const auto& v : nodes[id].childs) {
-				removedNodes.emplace_back(v);
+			for (const auto& v : node.childs) {
+				remove(v);
 			}
 			//replace
-			auto& node = nodes[id];
 			node.val = child_val;
 			node.childs.clear();
 			node.parent = parent_id;
-			//link-par
-			if (parent_id>=0)
-				nodes[parent_id].childs.push_back(id);
-			return id;
+			node.active = true;
 		}
-		//
-		nodes.emplace_back(MemoryNode(parent_id, child_val));
-		//link-par
+		else {
+			id = nodes.size();
+			nodes.emplace_back(MemoryNode(parent_id, child_val));
+		}
+			//link-par
 		if (parent_id>=0)
-			nodes[parent_id].childs.push_back(nodes.size()-1);
-		return nodes.size()-1;
+			nodes[parent_id].childs.push_back(id);
+		return id;
 	}
 
 	const int emplace_childs(const int parent_id, const vector<T>& childs) {
@@ -69,10 +71,11 @@ public:
 	}
 
 	void remove(const int id) {
-		if (id < 0 || id >= nodes.size()) {
-			throw std::exception();
+		if (id < 0 || id >= nodes.size() || !nodes[id].active) {
+			return;
 		}
 		removedNodes.emplace_back(id);
+		nodes[id].active = false;
 	}
 
 	bool canBranchFind(const int leaf_id, const T val) const {
@@ -86,6 +89,19 @@ public:
 			idx = node.parent;
 		}
 		return false;
+	}
+
+	vector<T> get_branch(const int leaf_id) {
+		int idx = leaf_id;
+		vector<T> ret;
+		while(idx >= 0) {
+			const auto& node = nodes[idx];
+			// save
+			ret.emplace_back(node.val);
+			//
+			idx = node.parent;
+		}
+		return ret;
 	}
 };
 
