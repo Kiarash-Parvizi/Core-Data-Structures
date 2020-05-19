@@ -119,7 +119,7 @@ public:
 		return ret;
 	}
 
-	vector<T> get_branch_to(const int leaf_id, int final_id) {
+	vector<T> get_branch_to(const int leaf_id, int final_val) {
 		int idx = leaf_id;
 		vector<T> ret;
 		while(idx >= 0) {
@@ -127,7 +127,7 @@ public:
 			// save
 			ret.emplace_back(node.val);
 			//
-			if (node.val == final_id) {
+			if (node.val == final_val) {
 				break;
 			}
 			idx = node.parent;
