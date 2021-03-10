@@ -7,4 +7,5 @@
 *.bat
 *.sh
 *.swp
+*.hpp.gch
 build/
