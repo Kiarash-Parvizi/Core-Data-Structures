@@ -33,6 +33,13 @@ public:
 	inline int size() {
 		return nodes.size();
 	}
+	T& val(const int id) {
+		if (id < 0 || id >= nodes.size() || !nodes[id].active) {
+			throw "tree.getVal err";
+		}
+		return nodes[id].val;
+	}
+
 
 	// parent_id<0 : adds new node directly to the root
 	const int emplace_child(const int parent_id, const T child_val) {

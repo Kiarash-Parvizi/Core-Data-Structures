@@ -49,6 +49,15 @@ void u4() {
 	cout << "can find data in selected branch: " << tree.canBranchFind(i4, 1) << '\n';
 	cout << "tree size: " << tree.size() << '\n';
 	auto I2 = i2;
+	tree.val(I2) *= 10;
+	auto I3 = tree.emplace_child(I2, 5);
+	{
+		cout << "[ ";
+		for (auto& v: tree.get_branch(I3)) {
+			cout << v << ' ';
+		}
+		cout << "]\n";
+	}
 	tree.remove(i1);
 	i1 = tree.emplace_child(-1, 1);
 	i2 = tree.emplace_child(-1, 2);
@@ -58,6 +67,7 @@ void u4() {
 	auto i6 = tree.emplace_child(i4, 6);
 	cout << "tree size: " << tree.size() << '\n';
 	cout << "can find data in selected branch: " << tree.canBranchFind(I2, 22) << '\n';
+	cout << "can find data in selected branch: " << tree.canBranchFind(I2, 220) << '\n';
 	cout << "can find data in selected branch: " << tree.canBranchFind(i5, 22) << '\n';
 	cout << "can find data in selected branch: " << tree.canBranchFind(i5, 1) << '\n';
 	cout << "can find data in selected branch: " << tree.canBranchFind(i5, 2) << '\n';
